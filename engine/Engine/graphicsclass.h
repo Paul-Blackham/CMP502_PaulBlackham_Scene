@@ -41,6 +41,7 @@ public:
 	bool RenderToTexture();
 	bool RenderScene();
 	void ProcessCameraMovement(float, float, float);
+	void ProcessCameraRotation(float, float, float);
 
 private:
 	bool Render(float, float);

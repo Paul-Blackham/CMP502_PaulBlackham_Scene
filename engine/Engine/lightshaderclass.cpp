@@ -392,6 +392,8 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, i
 	D3DXMatrixTranspose(&viewMatrix, &viewMatrix);
 	D3DXMatrixTranspose(&projectionMatrix, &projectionMatrix);
 
+
+	// CONSTANT/MATRIX BUFFER => 0
 	// Lock the constant buffer so it can be written to.
 	result = deviceContext->Map(m_matrixBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	if(FAILED(result))
@@ -415,6 +417,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, i
 
 	// Now set the constant buffer in the vertex shader with the updated values.
     deviceContext->VSSetConstantBuffers(bufferNumber, 1, &m_matrixBuffer);
+
 
 	// Lock the camera constant buffer so it can be written to.
 	result = deviceContext->Map(m_cameraBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
@@ -449,7 +452,7 @@ bool LightShaderClass::SetShaderParameters(ID3D11DeviceContext* deviceContext, i
 	// Get a pointer to the data in the constant buffer.
 	dataPtr3 = (VariableBufferType*)mappedResource.pData;
 
-	//// Copy the variablethe constant buffer.
+	// Copy the variablethe constant buffer.
 	dataPtr3->delta = deltavalue;
 	//dataPtr3->padding2 = D3DXVECTOR3(0.0f, 0.0f, 0.0f);//lightDirection; //this is just padding so this data isnt used.
 

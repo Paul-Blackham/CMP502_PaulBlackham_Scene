@@ -55,4 +55,4 @@ c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(608): w
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54094): note: see previous definition of 'D3D10_ERROR_TOO_MANY_UNIQUE_STATE_OBJECTS'
 c:\program files (x86)\microsoft directx sdk (june 2010)\include\d3d10.h(609): warning C4005: 'D3D10_ERROR_FILE_NOT_FOUND': macro redefinition
   c:\program files (x86)\windows kits\10\include\10.0.16299.0\shared\winerror.h(54103): note: see previous definition of 'D3D10_ERROR_FILE_NOT_FOUND'
-  Engine.vcxproj -> \\StuHome\HomeDrive9$\1801199\CMP502\CMP502_Week10_Friday01_brokeSpec\engine\Debug\Engine.exe
+  Engine.vcxproj -> C:\Users\pauls\Documents\GitHub\CMP502_PaulBlackham_Scene\engine\Debug\Engine.exe
