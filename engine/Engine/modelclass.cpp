@@ -26,13 +26,25 @@ ModelClass::~ModelClass()
 bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* textureFilename)
 {
 	bool result;
-
+	char* objChar = ".obj";
+	char* txtChar = ".txt";
 
 	// Load in the model data,
-	result = LoadModel(modelFilename);
-	if(!result)
+	if (strstr(modelFilename,txtChar))
 	{
-		return false;
+		result = LoadModelTxt(modelFilename);
+		if (!result)
+		{
+			return false;
+		}
+	}
+	else if (strstr(modelFilename, objChar))
+	{
+		result = LoadModelObj(modelFilename);
+		if (!result)
+		{
+			return false;
+		}
 	}
 
 
@@ -217,7 +229,7 @@ void ModelClass::RenderBuffers(ID3D11DeviceContext* deviceContext)
 }
 
 
-bool ModelClass::LoadModel(char* filename)
+bool ModelClass::LoadModelTxt(char* filename)
 {
 	ifstream fin;
 	char input;
@@ -274,6 +286,23 @@ bool ModelClass::LoadModel(char* filename)
 	fin.close();
 
 	return true;
+}
+
+bool ModelClass::LoadModelObj(char* filename) {
+	ifstream fin;
+	char input;
+	int i;
+
+	// Open the model file.
+	fin.open(filename);
+
+	// If it could not open the file then exit.
+	if (fin.fail())
+	{
+		return false;
+	}
+
+	return false;
 }
 
 
