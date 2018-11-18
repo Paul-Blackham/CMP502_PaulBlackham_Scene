@@ -74,6 +74,38 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 		return false;
 	}
 
+	// Create the floor model object.
+	m_floorModel = new ModelClass;
+	if (!m_floorModel)
+	{
+		return false;
+	}
+
+	// Initialize the model object.
+	result = m_floorModel->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
+	
+
+	// Create the floor model object.
+	m_environmentModel = new ModelClass;
+	if (!m_environmentModel)
+	{
+		return false;
+	}
+
+	// Initialize the model object.
+	result = m_environmentModel->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	if (!result)
+	{
+		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+		return false;
+	}
+
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
 	if(!m_LightShader)
@@ -382,8 +414,9 @@ bool GraphicsClass::RenderToTexture()
 
 	// Set the render target to be the render to texture.
 	m_RenderTexture->SetRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView());
-		// Clear the render to texture.
-		m_RenderTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView(), 0.0f, 0.0f, 1.0f, 1.0f);
+
+	// Clear the render to texture.
+	m_RenderTexture->ClearRenderTarget(m_D3D->GetDeviceContext(), m_D3D->GetDepthStencilView(), 0.0f, 0.0f, 1.0f, 1.0f);
 
 	// Render the scene now and it will draw to the render to texture instead of the back buffer.
 	result = RenderScene();
@@ -425,6 +458,21 @@ bool GraphicsClass::RenderScene()
 	
 	// Put the model vertex and index buffers on the graphics pipeline to prepare them for drawing.
 	m_Model->Render(m_D3D -> GetDeviceContext());
+
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, 0.0f, 0.0f);
+
+	// Render the model using the light shader.
+	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
+		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 1.0f, m_Model->GetTexture(),
+		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
+	if (!result)
+	{
+		return false;
+	}
+
+	m_floorModel->Render(m_D3D->GetDeviceContext());
+
+	D3DXMatrixTranslation(&worldMatrix, 0.0f, -5.0f, 0.0f);
 
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,

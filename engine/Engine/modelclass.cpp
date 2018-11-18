@@ -30,7 +30,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	char* txtChar = ".txt";
 
 	// Load in the model data,
-	if (strstr(modelFilename,txtChar))
+	if (strstr(modelFilename,txtChar)) // check if file name contains ".txt"
 	{
 		result = LoadModelTxt(modelFilename);
 		if (!result)
@@ -38,13 +38,16 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 			return false;
 		}
 	}
-	else if (strstr(modelFilename, objChar))
+	else if (strstr(modelFilename, objChar)) // check if file name contains ".obj"
 	{
 		result = LoadModelObj(modelFilename);
 		if (!result)
 		{
 			return false;
 		}
+	}
+	else {
+		return false;
 	}
 
 
