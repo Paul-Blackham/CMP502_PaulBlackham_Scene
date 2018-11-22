@@ -82,7 +82,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_floorModel->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	result = m_floorModel->Initialize(m_D3D->GetDevice(), "../Engine/data/Floor.obj", L"../Engine/data/seafloor.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -91,20 +91,20 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	
 
-	// Create the floor model object.
-	m_environmentModel = new ModelClass;
-	if (!m_environmentModel)
-	{
-		return false;
-	}
+	//// Create the environment model object.
+	//m_environmentModel = new ModelClass;
+	//if (!m_environmentModel)
+	//{
+	//	return false;
+	//}
 
-	// Initialize the model object.
-	result = m_environmentModel->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
-	if (!result)
-	{
-		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
-		return false;
-	}
+	//// Initialize the model object.
+	//result = m_environmentModel->Initialize(m_D3D->GetDevice(), "../Engine/data/cube.txt", L"../Engine/data/seafloor.dds");
+	//if (!result)
+	//{
+	//	MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
+	//	return false;
+	//}
 
 	// Create the light shader object.
 	m_LightShader = new LightShaderClass;
@@ -145,7 +145,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.15f, 0.15f, 0.15f, 1.0f);
-	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 0.5f);
+	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(10.0f);

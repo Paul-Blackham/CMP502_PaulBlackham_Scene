@@ -239,7 +239,6 @@ float InputClass::ProcessZoom()
 
 	if(m_keyboardState[DIK_LCONTROL] & 0x80){
 		m_mouseZoom = m_mouseState.lY * m_sensitivity;
-		//m_mouseZoom = 0.01f;
 	}
 	
 

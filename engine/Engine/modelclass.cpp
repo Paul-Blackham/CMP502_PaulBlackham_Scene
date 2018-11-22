@@ -41,6 +41,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	else if (strstr(modelFilename, objChar)) // check if file name contains ".obj"
 	{
 		result = LoadModelObj(modelFilename);
+		result = ReadObjVertData(modelFilename);
 		if (!result)
 		{
 			return false;
@@ -295,6 +296,11 @@ bool ModelClass::LoadModelObj(char* filename) {
 	ifstream fin;
 	char input;
 	int i;
+	bool result;
+
+	m_vertexCount = 0;
+	m_textureCount = 0;
+	m_normalCount = 0;
 
 	// Open the model file.
 	fin.open(filename);
@@ -305,7 +311,110 @@ bool ModelClass::LoadModelObj(char* filename) {
 		return false;
 	}
 
-	return false;
+	// Read from the file and continue to read until the end of the file is reached.
+	fin.get(input);
+	while (!fin.eof())
+	{
+		// If the line starts with 'v' then count either the vertex, the texture coordinates, or the normal vector.
+		if (input == 'v')
+		{
+			fin.get(input);
+			if (input == ' ') { m_vertexCount++; }
+			if (input == 't') { m_textureCount++; }
+			if (input == 'n') { m_normalCount++; }
+		}
+
+		// Otherwise read in the remainder of the line.
+		while (input != '\n')
+		{
+			fin.get(input);
+		}
+
+		// Start reading the beginning of the next line.
+		fin.get(input);
+	}
+
+	// Close the file.
+	fin.close();
+
+	m_indexCount = m_vertexCount;
+
+	m_model = new ModelType[m_vertexCount];
+	if (!m_model)
+	{
+		return false;
+	}
+
+	return true;
+}
+
+bool ModelClass::ReadObjVertData(char* filename) {
+	ifstream fin;
+	char input;
+	int vertexIndex, texcoordIndex, normalIndex;
+	bool tempCheck = false;
+	bool result;
+
+	vertexIndex = 0;
+	texcoordIndex = 0;
+	normalIndex = 0;
+
+	// Open the model file.
+	fin.open(filename);
+
+	if (fin.fail() == true)
+	{
+		return false;
+	}
+
+	fin.get(input);
+	while (!fin.eof())
+	{
+		if (input == 'v')
+		{
+			fin.get(input);
+			// Read in the vertices.
+			if (input == ' ')
+			{
+				fin >> m_model[vertexIndex].x >> m_model[vertexIndex].y >> m_model[vertexIndex].z;
+
+				// Invert the Z vertex to change to left hand system.
+				m_model[vertexIndex].z = m_model[vertexIndex].z * -1.0f;
+				vertexIndex++;
+			}
+
+			// Read in the texture uv coordinates.
+			if (input == 't')
+			{
+				fin >> m_model[texcoordIndex].tu >> m_model[texcoordIndex].tv;
+
+				// Invert the V texture coordinates to left hand system.
+				m_model[texcoordIndex].tu = 1.0f - m_model[texcoordIndex].tv;
+				texcoordIndex++;
+			}
+
+			// Read in the normals.
+			if (input == 'n')
+			{
+				fin >> m_model[normalIndex].nx >> m_model[normalIndex].ny >> m_model[normalIndex].nz;
+
+				// Invert the Z normal to change to left hand system.
+				m_model[normalIndex].nz = m_model[normalIndex].nz * -1.0f;
+				normalIndex++;
+			}
+		}
+
+		// Read in the remainder of the line.
+		while (input != '\n')
+		{
+			fin.get(input);
+		}
+
+		// Start reading the beginning of the next line.
+		fin.get(input);
+	}
+
+	return true;
 }
 
 

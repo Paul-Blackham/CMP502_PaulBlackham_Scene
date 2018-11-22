@@ -57,6 +57,7 @@ private:
 
 	bool LoadModelTxt(char*);
 	bool LoadModelObj(char*);
+	bool ReadObjVertData(char*);
 	void ReleaseModel();
 
 	bool LoadTexture(ID3D11Device*, WCHAR*);
@@ -65,7 +66,7 @@ private:
 
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	int m_vertexCount, m_indexCount;
+	int m_vertexCount, m_indexCount, m_textureCount, m_normalCount;
 	ModelType* m_model;
 	TextureClass* m_Texture;
 };
