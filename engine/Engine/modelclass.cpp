@@ -49,7 +49,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	}
 	else if (strstr(modelFilename, objChar)) // check if file name contains ".obj"
 	{
-		// Get vertex count (needed to read OBJ format, where data for each vertex is not written in per vertex order
+		// Get vertex count (needed to read OBJ format, where data for each vertex is not written in per vertex order)
 		result = ReadObjVertCount(modelFilename);
 		if (!result)
 		{
