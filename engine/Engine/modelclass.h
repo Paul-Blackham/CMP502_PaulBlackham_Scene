@@ -56,7 +56,7 @@ private:
 
 
 	bool LoadModelTxt(char*);
-	bool LoadModelObj(char*);
+	bool ReadObjVertCount(char*);
 	bool ReadObjVertData(char*);
 	void ReleaseModel();
 
