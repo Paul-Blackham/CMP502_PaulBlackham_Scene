@@ -4,6 +4,14 @@
 #include "modelclass.h"
 
 
+// This class is called by the graphics class
+// It is passed the D3D device, file name (sting of file location) and texture name
+// It reads the model file and gets vertex information - fills ModelType with data (m_model)
+// Pushes m_model data into the vertex buffer
+// Pushes the vertex index data into the index buffer *** ISSUE COULD BE HERE
+
+// NOTE: Index buffer is the size of the number of vertices, meaning the vertex buffer needs to contain everything made up of triangles
+
 ModelClass::ModelClass()
 {
 	m_vertexBuffer = 0;
@@ -29,9 +37,10 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	char* objChar = ".obj";
 	char* txtChar = ".txt";
 
-	// Load in the model data,
+	
 	if (strstr(modelFilename,txtChar)) // check if file name contains ".txt"
 	{
+		// Load model data 
 		result = LoadModelTxt(modelFilename);
 		if (!result)
 		{
@@ -40,7 +49,13 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	}
 	else if (strstr(modelFilename, objChar)) // check if file name contains ".obj"
 	{
-		result = LoadModelObj(modelFilename);
+		// Get vertex count (needed to read OBJ format, where data for each vertex is not written in per vertex order
+		result = ReadObjVertCount(modelFilename);
+		if (!result)
+		{
+			return false;
+		}
+		// Load model data
 		result = ReadObjVertData(modelFilename);
 		if (!result)
 		{
@@ -96,17 +111,20 @@ void ModelClass::Render(ID3D11DeviceContext* deviceContext)
 
 int ModelClass::GetIndexCount()
 {
+	// Data used by the shader to render the model (light shader in graphics class)
 	return m_indexCount;
 }
 
 ID3D11ShaderResourceView* ModelClass::GetTexture()
 {
+	// Data used by the shader to render the model (light shader in graphics class)
 	return m_Texture->GetTexture();
 }
 
 
 bool ModelClass::InitializeBuffers(ID3D11Device* device)
 {
+	// Passing vertex data to the vertex buffer in order of drawing triangles (counter-clockwise per triangle)
 	VertexType* vertices;
 	unsigned long* indices;
 	D3D11_BUFFER_DESC vertexBufferDesc, indexBufferDesc;
@@ -160,6 +178,7 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	}
 
 	// Set up the description of the static index buffer.
+	// NOTE: Index buffer is the size of the number of vertices, meaning the vertex buffer needs to contain every face made up of triangles, and have duplicate verts
     indexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
     indexBufferDesc.ByteWidth = sizeof(unsigned long) * m_indexCount;
     indexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
@@ -292,7 +311,7 @@ bool ModelClass::LoadModelTxt(char* filename)
 	return true;
 }
 
-bool ModelClass::LoadModelObj(char* filename) {
+bool ModelClass::ReadObjVertCount(char* filename) {
 	ifstream fin;
 	char input;
 	int i;
