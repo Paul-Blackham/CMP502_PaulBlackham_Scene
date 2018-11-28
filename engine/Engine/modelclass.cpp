@@ -18,6 +18,7 @@ ModelClass::ModelClass()
 	m_indexBuffer = 0;
 	m_Texture = 0;
 	m_model = 0;
+	m_face = 0;
 }
 
 
@@ -36,6 +37,8 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 	bool result;
 	char* objChar = ".obj";
 	char* txtChar = ".txt";
+	isObj = false;
+	isTxt = false;
 
 	
 	if (strstr(modelFilename,txtChar)) // check if file name contains ".txt"
@@ -46,6 +49,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		{
 			return false;
 		}
+		isTxt = true;
 	}
 	else if (strstr(modelFilename, objChar)) // check if file name contains ".obj"
 	{
@@ -61,6 +65,7 @@ bool ModelClass::Initialize(ID3D11Device* device, char* modelFilename, WCHAR* te
 		{
 			return false;
 		}
+		isObj = true;
 	}
 	else {
 		return false;
@@ -148,13 +153,34 @@ bool ModelClass::InitializeBuffers(ID3D11Device* device)
 	}
 
 	// Load the vertex array and index array with data.
-	for(i=0; i<m_vertexCount; i++)
-	{
-		vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
-		vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
-		vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
+	if (isTxt == true) {
+		// if it is a txt file, simply push in vert data along with index position
+		for (i = 0; i < m_vertexCount; i++)
+		{
+			vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
+			vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
+			vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
 
-		indices[i] = i;
+			indices[i] = i;
+		}
+	}
+	else if (isObj == true) {
+		// if it is an obj file, push in vert data and seperate index data
+		for (i = 0; i < m_vertexCount; i++)
+		{
+			vertices[i].position = D3DXVECTOR3(m_model[i].x, m_model[i].y, m_model[i].z);
+			vertices[i].texture = D3DXVECTOR2(m_model[i].tu, m_model[i].tv);
+			vertices[i].normal = D3DXVECTOR3(m_model[i].nx, m_model[i].ny, m_model[i].nz);
+		}
+		// indices need to be in order defined by face data in file (-1 due to obj data starting at 1, not 0)
+		for (i = 0; i < m_faceCount; i++)
+		{
+			// faceVerts = D3DXVECTOR3(m_face[i].a, m_face[i].b, m_face[i].c)
+
+			indices[i * 3] = m_face[i].a - 1;
+			indices[i * 3 + 1] = m_face[i].b - 1;
+			indices[i * 3 + 2] = m_face[i].c - 1;
+		}
 	}
 
 	// Set up the description of the static vertex buffer.
@@ -320,6 +346,7 @@ bool ModelClass::ReadObjVertCount(char* filename) {
 	m_vertexCount = 0;
 	m_textureCount = 0;
 	m_normalCount = 0;
+	m_faceCount = 0;
 
 	// Open the model file.
 	fin.open(filename);
@@ -343,6 +370,12 @@ bool ModelClass::ReadObjVertCount(char* filename) {
 			if (input == 'n') { m_normalCount++; }
 		}
 
+		if (input == 'f')
+		{
+			fin.get(input);
+			if (m_vertexCount > 1 && input == ' ') { m_faceCount++; }
+		}
+
 		// Otherwise read in the remainder of the line.
 		while (input != '\n')
 		{
@@ -356,10 +389,16 @@ bool ModelClass::ReadObjVertCount(char* filename) {
 	// Close the file.
 	fin.close();
 
-	m_indexCount = m_vertexCount;
+	m_indexCount = m_faceCount * 3;
 
 	m_model = new ModelType[m_vertexCount];
 	if (!m_model)
+	{
+		return false;
+	}
+
+	m_face = new FaceType[m_faceCount];
+	if (!m_face)
 	{
 		return false;
 	}
@@ -369,14 +408,15 @@ bool ModelClass::ReadObjVertCount(char* filename) {
 
 bool ModelClass::ReadObjVertData(char* filename) {
 	ifstream fin;
-	char input;
-	int vertexIndex, texcoordIndex, normalIndex;
+	char input, input2;
+	int vertexIndex, texcoordIndex, normalIndex, faceIndex;
 	bool tempCheck = false;
 	bool result;
 
 	vertexIndex = 0;
 	texcoordIndex = 0;
 	normalIndex = 0;
+	faceIndex = 0;
 
 	// Open the model file.
 	fin.open(filename);
@@ -420,6 +460,21 @@ bool ModelClass::ReadObjVertData(char* filename) {
 				// Invert the Z normal to change to left hand system.
 				m_model[normalIndex].nz = m_model[normalIndex].nz * -1.0f;
 				normalIndex++;
+			}
+		}
+
+		if (input == 'f')
+		{
+			fin.get(input);
+			// Read in the vertices.
+			if (m_vertexCount > 1 && input == ' ') // ERROR HERE
+			{
+				fin >> m_face[faceIndex].c >> input2 >> m_face[faceIndex].ct >> input2 >> m_face[faceIndex].cn
+					>> m_face[faceIndex].b >> input2 >> m_face[faceIndex].bt >> input2 >> m_face[faceIndex].bn
+					>> m_face[faceIndex].a >> input2 >> m_face[faceIndex].at >> input2 >> m_face[faceIndex].an;
+
+				// May need to reverse order here...
+				faceIndex++;
 			}
 		}
 

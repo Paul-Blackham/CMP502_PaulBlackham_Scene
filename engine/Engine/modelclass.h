@@ -35,6 +35,13 @@ private:
 		float nx, ny, nz;
 	};
 
+	struct FaceType
+	{
+		int a, b, c;
+		int at, bt, ct;
+		int an, bn, cn;
+	};
+
 public:
 	ModelClass();
 	ModelClass(const ModelClass&);
@@ -66,8 +73,11 @@ private:
 
 private:
 	ID3D11Buffer *m_vertexBuffer, *m_indexBuffer;
-	int m_vertexCount, m_indexCount, m_textureCount, m_normalCount;
+	int m_vertexCount, m_indexCount, m_textureCount, m_normalCount, m_faceCount;
+	bool isObj = false;
+	bool isTxt = false;
 	ModelType* m_model;
+	FaceType* m_face;
 	TextureClass* m_Texture;
 };
 
