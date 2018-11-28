@@ -328,7 +328,7 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 		zMult = -1;
 	}
 
-	float yUnit2Dvec = sqrt(xZunit2Dvec * xZunit2Dvec + positionY * positionY);
+	float yUnit2Dvec = sqrt(xZunit2Dvec * xZunit2Dvec + currentPosition.y * currentPosition.y);
 
 	m_Camera->SetPosition( sin(xRotation) * xZunit2Dvec, sin(yRotation) * yUnit2Dvec, cos(xRotation) * xZunit2Dvec * -1.0f);
 }
