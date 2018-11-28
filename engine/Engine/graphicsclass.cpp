@@ -29,9 +29,9 @@ GraphicsClass::~GraphicsClass()
 bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 {
 	bool result;
-	xRotation = 0;
-	yRotation = 0;
-	zRotation = 0;
+	xRotation = 0.0f;
+	yRotation = 0.0f;
+	zRotation = 0.0f;
 
 
 	// Create the Direct3D object.
@@ -286,7 +286,7 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 	float positionY = currentPosition.y + normalY;
 	float positionZ = currentPosition.z + normalZ;
 
-	if (positionX > 20.0f) {
+	/*if (positionX > 20.0f) {
 		positionX = 20.0f;
 	}
 
@@ -306,7 +306,7 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 	}
 	if (positionZ < -20.0f) {
 		positionZ = -20.0f;
-	}
+	}*/
 
 	xRotation += rotateX;
 	yRotation += rotateY;
@@ -316,6 +316,7 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 	int xMult = 1;
 	int yMult = 1;
 	int zMult = 1;
+
 
 	if (positionX < 0) {
 		xMult = -1;
@@ -329,7 +330,7 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 
 	float yUnit2Dvec = sqrt(xZunit2Dvec * xZunit2Dvec + positionY * positionY);
 
-	m_Camera->SetPosition(sin(xRotation) * xZunit2Dvec, sin(yRotation) * yUnit2Dvec, cos(xRotation) * xZunit2Dvec * zMult);
+	m_Camera->SetPosition( sin(xRotation) * xZunit2Dvec, sin(yRotation) * yUnit2Dvec, cos(xRotation) * xZunit2Dvec * -1.0f);
 }
 
 void GraphicsClass::ProcessCameraRotation(float zoom, float rotateX, float rotateY){
@@ -341,39 +342,43 @@ void GraphicsClass::ProcessCameraRotation(float zoom, float rotateX, float rotat
 	float rotAddPitch = 0.0f; // for different quadrents of rotation
 	float xZunit2Dvec = sqrt(newPosition.x * newPosition.x + newPosition.z * newPosition.z);
 
-	// Process Yaw (Y Rotation)
-	if (newPosition.z < 0.0f) {
-		rotAddYaw = 0.0f;
-	}
-	else if (newPosition.z > 0.0f) {
-		rotAddYaw = -180.0f;
-	}
-	
-	if (newPosition.z == 0.0f) {
-		//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	}
-	else {
-		m_Camera->SetRotation(0.0f, rotAddYaw + (atan(newPosition.x / newPosition.z) * toDegrees), 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	}
 
-	D3DXVECTOR3 newRotation = m_Camera->GetRotation();
+	m_Camera->SetRotation(yRotation * toDegrees, -xRotation * toDegrees, 0.0f);
 
-	// Process Pitch (local X Rotation)
-	if (newPosition.z < 0.0f) {
-		xZunit2Dvec = -xZunit2Dvec;
-		rotAddPitch = 0.0f;
-	}
-	else if (newPosition.z > 0.0f) {
-		xZunit2Dvec = -xZunit2Dvec;
-		rotAddPitch = -180.0f;
-	}
 
-	if (newPosition.y == 0.0f) {
-		//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	}
-	else {
-		m_Camera->SetRotation(-(rotAddPitch + (atan(newPosition.y / xZunit2Dvec) * toDegrees)), newRotation.y , 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	}
+	//// Process Yaw (Y Rotation)
+	//if (newPosition.z < 0.0f) {
+	//	rotAddYaw = 0.0f;
+	//}
+	//else if (newPosition.z > 0.0f) {
+	//	rotAddYaw = -180.0f;
+	//}
+	//
+	//if (newPosition.z == 0.0f) {
+	//	//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
+	//}
+	//else {
+	//	m_Camera->SetRotation(0.0f, rotAddYaw + (atan(newPosition.x / newPosition.z) * toDegrees), 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
+	//}
+
+	//D3DXVECTOR3 newRotation = m_Camera->GetRotation();
+
+	//// Process Pitch (local X Rotation)
+	//if (newPosition.z < 0.0f) {
+	//	xZunit2Dvec = -xZunit2Dvec;
+	//	rotAddPitch = 0.0f;
+	//}
+	//else if (newPosition.z > 0.0f) {
+	//	xZunit2Dvec = -xZunit2Dvec;
+	//	rotAddPitch = -180.0f;
+	//}
+
+	//if (newPosition.y == 0.0f) {
+	//	//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
+	//}
+	//else {
+	//	m_Camera->SetRotation(-(rotAddPitch + (atan(newPosition.y / xZunit2Dvec) * toDegrees)), newRotation.y , 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
+	//}
 
 	return;
 }

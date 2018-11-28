@@ -45,9 +45,9 @@ public:
 
 private:
 	bool Render(float, float);
-	float xRotation = 0;
-	float yRotation = 0;
-	float zRotation = 0;
+	float xRotation = 0.0f;
+	float yRotation = 0.0f;
+	float zRotation = 0.0f;
 
 private:
 	D3DClass* m_D3D;
