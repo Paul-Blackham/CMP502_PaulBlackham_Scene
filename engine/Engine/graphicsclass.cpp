@@ -2,6 +2,7 @@
 // Filename: graphicsclass.cpp
 ////////////////////////////////////////////////////////////////////////////////
 #include "graphicsclass.h"
+#include <d3dx10math.h>
 
 
 GraphicsClass::GraphicsClass()
@@ -246,7 +247,7 @@ bool GraphicsClass::Frame(float zoom, float rotateX, float rotateY)
 	}
 
 	// Update the delta variable each frame. (keep this between 0 and 1)
-	delta = 1.0f;
+	delta = 2.0f;
 	
 	// Render the graphics scene.
 	result = Render(rotation, delta);
@@ -335,50 +336,10 @@ void GraphicsClass::ProcessCameraMovement(float zoom, float rotateX, float rotat
 
 void GraphicsClass::ProcessCameraRotation(float zoom, float rotateX, float rotateY){
 
-	D3DXVECTOR3 newPosition = m_Camera->GetPosition();
-	float toDegrees = 57.2958f;
-	float toRadians = 0.0174533f;
-	float rotAddYaw = 0.0f; // for different quadrents of rotation
-	float rotAddPitch = 0.0f; // for different quadrents of rotation
-	float xZunit2Dvec = sqrt(newPosition.x * newPosition.x + newPosition.z * newPosition.z);
-
+	float toDegrees = 180.0f/ D3DX_PI; // 57.295779513f
 
 	m_Camera->SetRotation(yRotation * toDegrees, -xRotation * toDegrees, 0.0f);
 
-
-	//// Process Yaw (Y Rotation)
-	//if (newPosition.z < 0.0f) {
-	//	rotAddYaw = 0.0f;
-	//}
-	//else if (newPosition.z > 0.0f) {
-	//	rotAddYaw = -180.0f;
-	//}
-	//
-	//if (newPosition.z == 0.0f) {
-	//	//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	//}
-	//else {
-	//	m_Camera->SetRotation(0.0f, rotAddYaw + (atan(newPosition.x / newPosition.z) * toDegrees), 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	//}
-
-	//D3DXVECTOR3 newRotation = m_Camera->GetRotation();
-
-	//// Process Pitch (local X Rotation)
-	//if (newPosition.z < 0.0f) {
-	//	xZunit2Dvec = -xZunit2Dvec;
-	//	rotAddPitch = 0.0f;
-	//}
-	//else if (newPosition.z > 0.0f) {
-	//	xZunit2Dvec = -xZunit2Dvec;
-	//	rotAddPitch = -180.0f;
-	//}
-
-	//if (newPosition.y == 0.0f) {
-	//	//m_Camera->SetRotation(0.0f, (90 * toRadians - atan(newPosition.z / newPosition.x)) * toDegrees, 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	//}
-	//else {
-	//	m_Camera->SetRotation(-(rotAddPitch + (atan(newPosition.y / xZunit2Dvec) * toDegrees)), newRotation.y , 0.0f); //atan(yUnit2Dvec / newPosition.y) * 57.2958f
-	//}
 
 	return;
 }
