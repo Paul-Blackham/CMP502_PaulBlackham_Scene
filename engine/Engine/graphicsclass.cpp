@@ -68,7 +68,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/Cube.obj", L"../Engine/data/seafloor.dds");
+	result = m_Model->Initialize(m_D3D->GetDevice(), "../Engine/data/Model.obj", L"../Engine/data/seafloor.dds");
 	if(!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -100,7 +100,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	}
 
 	// Initialize the model object.
-	result = m_environmentModel->Initialize(m_D3D->GetDevice(), "../Engine/data/Environment.obj", L"../Engine/data/seafloor.dds");
+	result = m_environmentModel->Initialize(m_D3D->GetDevice(), "../Engine/data/Environment2.obj", L"../Engine/data/seafloor.dds");
 	if (!result)
 	{
 		MessageBox(hwnd, L"Could not initialize the model object.", L"Error", MB_OK);
@@ -147,7 +147,7 @@ bool GraphicsClass::Initialize(int screenWidth, int screenHeight, HWND hwnd)
 	// Initialize the light object.
 	m_Light->SetAmbientColor(0.3f, 0.3f, 0.3f, 1.0f);
 	m_Light->SetDiffuseColor(1.0f, 1.0f, 1.0f, 1.0f);
-	m_Light->SetDirection(0.0f, 0.0f, 1.0f);
+	m_Light->SetDirection(0.0f, -1.0f, 0.0f);
 	m_Light->SetSpecularColor(1.0f, 1.0f, 1.0f, 1.0f);
 	m_Light->SetSpecularPower(10.0f);
 
@@ -429,7 +429,7 @@ bool GraphicsClass::RenderScene()
 
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 1.0f, m_Model->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 2.0f, m_Model->GetTexture(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result)
 	{
@@ -442,7 +442,7 @@ bool GraphicsClass::RenderScene()
 	//
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 1.0f, m_Model->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 2.0f, m_Model->GetTexture(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result)
 	{
@@ -455,7 +455,7 @@ bool GraphicsClass::RenderScene()
 	//
 	// Render the model using the light shader.
 	result = m_LightShader->Render(m_D3D->GetDeviceContext(), m_Model->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix,
-		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 1.0f, m_Model->GetTexture(),
+		m_Light->GetDirection(), m_Light->GetDiffuseColor(), m_Light->GetAmbientColor(), 2.0f, m_Model->GetTexture(),
 		m_Camera->GetPosition(), m_Light->GetSpecularColor(), m_Light->GetSpecularPower());
 	if (!result)
 	{

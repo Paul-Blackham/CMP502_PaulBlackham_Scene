@@ -34,12 +34,6 @@ private:
 		float padding;
 	};
 
-	struct VariableBufferType
-	{
-		float delta;
-		D3DXVECTOR3 padding2;
-	};
-
 	struct LightBufferType
 	{
 		D3DXVECTOR4 ambientColor;
@@ -72,8 +66,8 @@ private:
 	ID3D11InputLayout* m_layout;
 	ID3D11SamplerState* m_sampleState;
 	ID3D11Buffer* m_matrixBuffer;
-	ID3D11Buffer* m_cameraBuffer;
 	ID3D11Buffer* m_variableBuffer;
+	ID3D11Buffer* m_cameraBuffer;
 	ID3D11Buffer* m_lightBuffer;
 };
 

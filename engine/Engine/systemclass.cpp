@@ -143,7 +143,7 @@ void SystemClass::Run()
 bool SystemClass::Frame()
 {
 	bool result;
-	float zoom = 0;
+	float zoom;
 	float rotateX;
 	float rotateY;
 
